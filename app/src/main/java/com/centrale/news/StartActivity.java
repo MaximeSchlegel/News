@@ -31,11 +31,9 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        Log.d("StartActivity", "Created");
+        Log.d("StartAct", "Created");
 
         sourcesList = SourcesList.getInstance();
-
-        Log.d("StartActivity", "sources created");
 
         retrieveSources();
     }
@@ -61,16 +59,14 @@ public class StartActivity extends AppCompatActivity {
                                     sourcesList.add(source);
                                 }
 
-                                Log.d("StartActivity", "retrieveSources done");
-                                Log.d("StartActivity", sourcesList.toString());
+                                Log.d("StartAct", "retrieveSources - done");
 
                                 // launch the main activity
                                 Intent i = new Intent(StartActivity.this, MainActivity.class);
                                 startActivity(i);
 
                             } catch (JSONException e) {
-                                Log.e("StartActivity", "error parsing JSON");
-                                e.printStackTrace();
+                                Log.e("StartAct", "retrieveSources - parsing error : " + e.getMessage());
                             }
                         }
                     }
@@ -78,9 +74,8 @@ public class StartActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("StartActivity", "network error while retrieveSources");
+                        Log.e("StartAct", "retrieveSources - network error : " + error.getMessage());
                         popNetworkError();
-
                     }
                 });
 
