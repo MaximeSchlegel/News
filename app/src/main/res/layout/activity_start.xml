@@ -15,6 +15,7 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:contentDescription="@string/app_logo_desc"
             app:srcCompat="@mipmap/icon_round" />
     </LinearLayout>
 

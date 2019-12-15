@@ -16,7 +16,8 @@ import com.centrale.news.R;
 import com.centrale.news.adapters.ArticlePreviewListAdapter;
 
 
-public class ArticlePreviewListFragment extends Fragment {
+public class ArticlePreviewListFragment
+        extends Fragment {
 
     private ArticlePreviewListAdapter adapter;
     private OnListFragmentInteractionListener listener;
@@ -53,7 +54,7 @@ public class ArticlePreviewListFragment extends Fragment {
         final RecyclerView view = (RecyclerView) inflater.inflate(R.layout.fragment_article_preview_list, container, false);
         Context context = view.getContext();
 
-        adapter = new ArticlePreviewListAdapter(listener);
+        adapter = new ArticlePreviewListAdapter(getContext(), listener);
 
         view.setLayoutManager(new LinearLayoutManager(context));
         view.setAdapter(adapter);

@@ -1,10 +1,16 @@
 package com.centrale.news;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -56,18 +62,19 @@ public class MainActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.i("MainActivity", "Created");
+        Log.i("MainAct", "Created");
 
         sourcesList = SourcesList.getInstance();
         articlesList = ArticlesList.getInstance();
 
-        // Map the activity componants
+        // Map the activity components
         spinner = (Spinner) findViewById(R.id.sourcesSpinner);
         previewListFragment = new ArticlePreviewListFragment();
         previewShowFragment = null;
 
         // Create the dropdown menu
         final ArrayList<CharSequence> sources = new ArrayList<>();
+        sources.add("Top Headlines");
         for(int i = 0; i < sourcesList.size(); i++){
             sources.add(sourcesList.get(i).getName());
         }
@@ -79,8 +86,14 @@ public class MainActivity
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedSource = sourcesList.get(position);
-                Log.i("MainActivity", "Selected: " + selectedSource.getName());
+                if (position == 0) {
+                    selectedSource = null;
+                    Log.i("MainAct", "Spinner selected: Top Headline");
+                } else {
+                    position--;
+                    selectedSource = sourcesList.get(position);
+                    Log.i("MainAct", "Spinner selected: " + selectedSource.getName());
+                }
                 page = 1;
                 articlesList.clear();
                 previewListFragment.notifyDataSetChanged();
@@ -91,6 +104,16 @@ public class MainActivity
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        Log.d("MainAct", "Spinner Created");
+
+        // set the selected sources
+        if (savedInstanceState != null) {
+            selectedSource = SourcesList.getInstance().get(savedInstanceState.getString("source"));
+            Log.d("MainAct", "Old selected sources loaded : " + selectedSource.getName());
+        } else {
+            selectedSource = null;
+        }
+
         // get the articles from the sources
         retrieveArticles();
 
@@ -100,16 +123,26 @@ public class MainActivity
                 .commit();
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        if (selectedSource != null) {
+            outState.putString("source", selectedSource.getId());
+            Log.d("MainAct", "selected source saved");
+        }
+        super.onSaveInstanceState(outState);
+    }
+
     private void retrieveArticles() {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
 
         String url;
         if (selectedSource != null) {
-            url = ARTICLESURL+"?sources="+selectedSource.getId()+"&apge="+page+"&apikey="+API_KEY;
+            url = ARTICLESURL+"?language=fr&sources="+selectedSource.getId()+"&apge="+page+"&apikey="+API_KEY;
         } else {
-            url = "https://newsapi.org/v2/top-headlines?country=fr?apge="+page+"&apiKey="+API_KEY;
+            url = "https://newsapi.org/v2/top-headlines?country=fr&apge="+page+"&apiKey="+API_KEY;
         }
+        Log.d("MainAct", "retrieveArticles url : " + url);
 
         // Request a json response from the provided URL.
         JsonObjectRequest req = new JsonObjectRequest(url, null,
@@ -128,10 +161,9 @@ public class MainActivity
                                 }
 
 
-                                Log.d("retrieveArticles", "done");
+                                Log.d("MainAct", "retrieveArticles - done");
                             } catch (JSONException e) {
-                                Log.e("retrieveArticles", "error parsing JSON");
-                                e.printStackTrace();
+                                Log.e("MainAct", "retrieveArticles - error parsing : " +e.getMessage());
                             }
                         }
                     }
@@ -139,12 +171,10 @@ public class MainActivity
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("retrieveArticles", "network error while getting articles");
+                        Log.e("MainAct", "retrieveArticles - network error : " + error.getMessage());
                         popNetworkError();
-
                     }
                 });
-
         queue.add(req);
     }
 
@@ -165,6 +195,7 @@ public class MainActivity
 
     @Override
     public void onArticleClicked(int position) {
+        Log.d("MainAct", "article clicked : " + ArticlesList.getInstance().get(position).getSourceId());
         previewShowFragment = ArticlePreviewShowFragment.newInstance(position);
         getSupportFragmentManager().beginTransaction()
                 .remove(previewListFragment)
@@ -177,6 +208,7 @@ public class MainActivity
     @Override
     public void onTop() {
         //refresh the articles
+        Log.d("MainAct", "refresh articles");
         page = 1;
         articlesList.clear();
         previewListFragment.notifyDataSetChanged();
@@ -187,20 +219,25 @@ public class MainActivity
     public void onBottom() {
         //load more articles
         if (page <= 5) {
+            Log.d("MainAct", "Bottom - Loading more article");
             page ++;
             retrieveArticles();
         } else {
+            Log.d("MainAct", "Bottom - Limit reach");
             Toast.makeText(this, "La dernière page a été atteinte", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onOpenArticle(Article article) {
-
+        Intent i = new Intent(MainActivity.this, WebActivity.class);
+        i.putExtra("url", article.getArticleUrl());
+        startActivity(i);
     }
 
     @Override
     public void onCloseFragment() {
+        Log.d("MainAct", "Close article preview show fragment");
         getSupportFragmentManager().beginTransaction()
                 .remove(previewShowFragment)
                 .commit();

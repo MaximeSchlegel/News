@@ -2,8 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/padding"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:baselineAligned="false"
     android:orientation="horizontal">
 
     <FrameLayout
@@ -20,11 +25,12 @@
         <ImageView
             android:id="@+id/articleImage"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:contentDescription="@string/image_desc" />
     </FrameLayout>
 
     <LinearLayout
-        android:id="@+id/textLayout"
+        android:id="@+id/LinearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="3"
@@ -38,37 +44,39 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/titleTextView"
+                android:id="@+id/titleLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Titre :"
-                tools:text="Titre :" />
+                android:text="@string/title_label"
+                android:textSize="18sp"
+                tools:text="@string/title_label" />
 
             <TextView
-                android:id="@+id/articleTitleTextView"
+                android:id="@+id/articleTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:textSize="18sp" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/otherLayout"
+            android:id="@+id/authorLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/authorTextView"
+                android:id="@+id/authorLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Auteur :"
-                tools:text="Auteur :" />
+                android:text="@string/author_label"
+                android:textSize="12sp"
+                tools:text="@string/author_label" />
 
             <TextView
-                android:id="@+id/articleAuthorTextView"
+                android:id="@+id/articleAuthor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -79,17 +87,18 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/dateTextView"
+                android:id="@+id/dateLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Date :"
-                tools:text="Date :" />
+                android:text="@string/date_label"
+                android:textSize="12sp"
+                tools:text="@string/date_label" />
 
             <TextView
-                android:id="@+id/articleDateTextView"
+                android:id="@+id/articleDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:textSize="12sp" />
         </LinearLayout>
 
     </LinearLayout>

@@ -1,7 +1,10 @@
 package com.centrale.news.DataModels;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
+
+import com.centrale.news.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +44,7 @@ public class Article {
             this.imageUrl = article.get("urlToImage").toString();
             this.publicationDate = article.get("publishedAt").toString();
             this.content = article.get("content").toString();
+
             this.image = null;
         } catch (JSONException e) {
             Log.e("Article", e.getMessage());

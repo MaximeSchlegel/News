@@ -1,6 +1,5 @@
 package com.centrale.news.DataModels;
 
-import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
@@ -15,6 +14,15 @@ public class SourcesList {
 
     public Source get(int i){
         return sources.get(i);
+    }
+
+    public Source get(String id){
+        for(Source source: sources) {
+            if (source.getId().equals(id)) {
+                return source;
+            }
+        }
+        return null;
     }
 
     public ArrayList<Source> getAll() {

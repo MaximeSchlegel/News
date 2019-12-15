@@ -1,6 +1,7 @@
 package com.centrale.news.adapters;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -22,13 +23,16 @@ import com.centrale.news.fragments.ArticlePreviewListFragment;
 
 import java.io.InputStream;
 
-public class ArticlePreviewListAdapter extends RecyclerView.Adapter<ArticlePreviewListAdapter.ViewHolder> {
+public class ArticlePreviewListAdapter
+        extends RecyclerView.Adapter<ArticlePreviewListAdapter.ViewHolder> {
 
     private ArticlesList articlesList;
+    private Context context;
     private ArticlePreviewListFragment.OnListFragmentInteractionListener listener;
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder
+            extends RecyclerView.ViewHolder {
 
         private View view;
         private ProgressBar progressBar;
@@ -47,16 +51,17 @@ public class ArticlePreviewListAdapter extends RecyclerView.Adapter<ArticlePrevi
 
             @Override
             protected Bitmap doInBackground(Article... articles) {
-                String urldisplay = articles[0].getImageUrl();
+                String url = articles[0].getImageUrl();
                 Bitmap img = null;
                 try {
-                    InputStream in = new java.net.URL(urldisplay).openStream();
+                    InputStream in = new java.net.URL(url).openStream();
                     img = BitmapFactory.decodeStream(in);
+                    articles[0].setImage(img);
                 } catch (Exception e) {
-                    Log.e("DAD_ImageTask", e.getMessage());
-                    e.printStackTrace();
+                    Log.d("DownloadImage", "Download Failed");
+                    Log.d("DownloadImage", e.getMessage());
+                    img = BitmapFactory.decodeResource(context.getResources(), R.mipmap.no_image_available);
                 }
-                articles[0].setImage(img);
                 return img;
             }
 
@@ -74,9 +79,9 @@ public class ArticlePreviewListAdapter extends RecyclerView.Adapter<ArticlePrevi
             view = itemView;
             progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
             image = (ImageView) itemView.findViewById(R.id.articleImage);
-            title = (TextView) itemView.findViewById(R.id.articleTitleTextView);
-            author = (TextView) itemView.findViewById(R.id.articleAuthorTextView);
-            date = (TextView) itemView.findViewById(R.id.articleDateTextView);
+            title = (TextView) itemView.findViewById(R.id.articleTitle);
+            author = (TextView) itemView.findViewById(R.id.articleAuthor);
+            date = (TextView) itemView.findViewById(R.id.articleDate);
         }
 
         public void bindArticle(int position) {
@@ -94,9 +99,10 @@ public class ArticlePreviewListAdapter extends RecyclerView.Adapter<ArticlePrevi
     }
 
 
-    public ArticlePreviewListAdapter(ArticlePreviewListFragment.OnListFragmentInteractionListener listener) {
+    public ArticlePreviewListAdapter(Context context, ArticlePreviewListFragment.OnListFragmentInteractionListener listener) {
         this.articlesList = ArticlesList.getInstance();
         this.listener = listener;
+        this.context = context;
     }
 
     @NonNull

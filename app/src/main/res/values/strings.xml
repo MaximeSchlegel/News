@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">News</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_label">Titre :</string>
+    <string name="source_label">Source :</string>
+    <string name="author_label">Auteur :</string>
+    <string name="date_label">Date :</string>
+    <string name="image_desc">Couverture de l\'article</string>
+    <string name="app_logo_desc" translatable="false">Logo de l\'application</string>
+    <string name="sourceLabel">Source :</string>
+    <string name="backBtn">Retour</string>
+    <string name="readMoreBtn">Lire plus ...</string>
 </resources>

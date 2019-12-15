@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.centrale.news.DataModels.Article;
 import com.centrale.news.DataModels.ArticlesList;
+import com.centrale.news.DataModels.Source;
+import com.centrale.news.DataModels.SourcesList;
 import com.centrale.news.R;
 
 
@@ -58,8 +60,9 @@ public class ArticlePreviewShowFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_article_preview_show, container, false);
 
         // get all the elements to set up
-        ImageView imageView = (ImageView) view.findViewById(R.id.articleImage);
         TextView titleTextView = (TextView) view.findViewById(R.id.articleTitle);
+        ImageView imageView = (ImageView) view.findViewById(R.id.articleImage);
+        TextView sourceTextView = (TextView) view.findViewById(R.id.articleSource);
         TextView authorTextView = (TextView) view.findViewById(R.id.articleAuthor);
         TextView dateTextView = (TextView) view.findViewById(R.id.articleDate);
         TextView contentTextView = (TextView) view.findViewById(R.id.articleContent);
@@ -68,11 +71,38 @@ public class ArticlePreviewShowFragment extends Fragment {
         Button readMoreBtn = (Button) view.findViewById(R.id.readMoreBtn);
 
         //set up the elements
-        imageView.setImageBitmap(article.getImage());
         titleTextView.setText(article.getTitle());
-        authorTextView.setText(article.getAuthor());
-        dateTextView.setText(article.getPublicationDate());
-        contentTextView.setText(article.getContent());
+
+        if (article.getImage() != null) {
+            imageView.setImageBitmap(article.getImage());
+        } else {
+            imageView.setVisibility(View.GONE);
+        }
+
+        Source source = SourcesList.getInstance().get(article.getSourceId());
+        if (source != null) {
+            sourceTextView.setText(source.getName());
+        } else {
+            view.findViewById(R.id.sourceLabel).setVisibility(View.GONE);
+        }
+
+        if (!article.getAuthor().equals("null")) {
+            authorTextView.setText(article.getAuthor());
+        } else {
+            view.findViewById(R.id.authorLayout).setVisibility(View.GONE);
+        }
+
+        if (!article.getPublicationDate().equals("null")) {
+            dateTextView.setText(article.getPublicationDate());
+        } else {
+            view.findViewById(R.id.dateLayout).setVisibility(View.GONE);
+        }
+
+        if(!article.getContent().equals("null")) {
+            contentTextView.setText(article.getContent());
+        } else {
+            contentTextView.setVisibility(View.GONE);
+        }
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,12 +111,18 @@ public class ArticlePreviewShowFragment extends Fragment {
             }
         });
 
-        readMoreBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onOpenArticle(article);
-            }
-        });
+        if (!article.getArticleUrl().equals("null")) {
+            readMoreBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onOpenArticle(article);
+                }
+            });
+        } else {
+            readMoreBtn.setVisibility(View.GONE);
+        }
+
+        //check if the article have all the element
 
         Log.d("ArticlePreviewShow", "View Created");
 
